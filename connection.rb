@@ -71,15 +71,20 @@ class Connection
 
   def product_template_service
     product_template_service = @dfp.service(:ProductTemplateService, API_VERSION)
-
     statement = DfpApiStatement::FilterStatement.new("WHERE id = #{44683}")
     page = product_template_service.get_product_templates_by_statement(statement.toStatement())
-    
     if page.include?(:total_result_set_size)
       puts "Total number of product templates: %d" % page[:total_result_set_size]
     end
   end
+
+  def product_service
+    product_service = @dfp.service(:ProductService, API_VERSION)
+    statement = DfpApiStatement::FilterStatement.new("WHERE id = #{1934443}")
+    page = product_service.get_products_by_statement(statement.toStatement())
+
+    if page.include?(:total_result_set_size)
+      puts "Total number of products: %d" % page[:total_result_set_size]
+    end
+  end
 end
-
-
-
