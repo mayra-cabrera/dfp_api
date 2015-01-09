@@ -23,7 +23,7 @@ class Team < Base
     print_footer page
   end
 
-  def get_team_by_name name = nil
+  def find_team_by_name name = nil
     name ||= "DALAI_Test Team"
     api_statement = generate_statement "WHERE name = '#{name}'"
     page = @service.get_teams_by_statement api_statement.toStatement
