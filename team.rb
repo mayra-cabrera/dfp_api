@@ -1,0 +1,41 @@
+require_relative 'base.rb'
+
+class Team < Base
+  attr_accessor :service
+
+  def initialize
+    super
+    @service = generate_service "TeamService"
+  end
+
+  def get_all
+    api_statement = generate_statement
+    begin
+      page = @service.get_teams_by_statement api_statement.toStatement
+      if page[:results]
+        page[:results].each_with_index do |team, index|
+          puts "%d) Team ID: %d, name: '%s'" % [index + api_statement.offset, team[:id], team[:name]]
+        end
+      end
+      api_statement.offset += DfpApiStatement::SUGGESTED_PAGE_LIMIT
+    end while api_statement.offset < page[:total_result_set_size]
+
+    print_footer page
+  end
+
+  def get_team_by_name name = nil
+    name ||= "DALAI_Test Team"
+    api_statement = generate_statement "WHERE name = '#{name}'"
+    page = @service.get_teams_by_statement api_statement.toStatement
+  
+    print_result page[:results].first, api_statement
+  end
+
+  private 
+
+  def print_result results, statement
+    if results
+      puts "%d) Team id: %d, name: '%s'" % [statement.offset + 1, results[:id], results[:name]]
+    end
+  end
+end
