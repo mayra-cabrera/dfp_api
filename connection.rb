@@ -56,16 +56,6 @@ class Connection
   end
 
 
-  def get_user_by_id user_id
-    service = @dfp.service(:UserService, API_VERSION)
-    statement = DfpApiStatement::FilterStatement.new("WHERE id = '#{user_id}'")
-    page = service.get_users_by_statement statement.toStatement
-
-    if page[:results]
-      puts "%d) User id: %d, name: '%s" % [statement.offset + 1, page[:results].first[:id], page[:results].first[:name]]
-    end
-  end
-
   # Searches for an specific dalai order based on a hardcoded name
   def get_dalai_order
     order_service = @dfp.service(:OrderService, API_VERSION)
