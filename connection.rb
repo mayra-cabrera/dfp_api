@@ -56,48 +56,6 @@ class Connection
   end
 
 
-  # Searches for an specific dalai order based on a hardcoded name
-  def get_dalai_order
-    order_service = @dfp.service(:OrderService, API_VERSION)
-    statement = DfpApiStatement::FilterStatement.new("WHERE name = '#{ORDER}' AND status = 'APPROVED'")
-    page = order_service.get_orders_by_statement statement.toStatement
-    if page[:results]
-      puts "%d) Order ID: %d, name: '%s', status: '%s'" % [statement.offset + 1, page[:results].first[:id], page[:results].first[:name], page[:results].first[:status]]
-    end
-  end
-
-  # Gets all proposals
-  def proposal_service
-    service = @dfp.service(:ProposalService, API_VERSION)
-    statement = DfpApiStatement::FilterStatement.new("ORDER by id ASC")
-    begin
-      page = service.get_proposals_by_statement statement.toStatement
-
-      if page[:results]
-        page[:results].each_with_index do |proposal, index|
-          puts "%d) Proposal ID: %d, name: '%s', status: '%s'" % [index + statement.offset, proposal[:id], proposal[:name], proposal[:status]]
-        end
-      end
-      statement.offset += DfpApiStatement::SUGGESTED_PAGE_LIMIT
-    end while statement.offset < page[:total_result_set_size]
-
-    # Print a footer.
-    if page.include?(:total_result_set_size)
-      puts "Total number of companies: %d" % page[:total_result_set_size]
-    end
-  end
-
-  # Search for dalai specific proposal based on a hardcoded name
-  def get_dalai_proposal
-    proposal_service = @dfp.service(:ProposalService, API_VERSION)
-    statement = DfpApiStatement::FilterStatement.new("WHERE name = '#{PROPOSAL}' AND status = 'DRAFT'")
-    page = proposal_service.get_proposals_by_statement statement.toStatement
-
-    if page[:results]
-      puts "%d) Proposal ID: %d, name: '%s', status: '%s'" % [statement.offset + 1, page[:results].first[:id], page[:results].first[:name], page[:results].first[:status]]
-    end
-  end
-
   # Get all ratecards
   def ratecard_service
     service = @dfp.service(:RateCardService, API_VERSION)

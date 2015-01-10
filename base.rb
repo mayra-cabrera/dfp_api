@@ -26,5 +26,4 @@ class Base
       puts "Total number of companies: %d" % page[:total_result_set_size]
     end
   end
-  
 end
