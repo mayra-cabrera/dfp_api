@@ -81,16 +81,4 @@ class Connection
       puts "%d) Workflow ID: %d, name: '%s'" % [statement.offset + 1, page[:results].first[:id], page[:results].first[:workflow_rule_name]]
     end
   end
-
-
-
-  # Search products based on a harcoded product_template_id
-  def get_products
-    product_service = @dfp.service(:ProductService, API_VERSION)
-    statement = DfpApiStatement::FilterStatement.new("WHERE productTemplateId = #{44683}")
-    page = product_service.get_products_by_statement(statement.toStatement())
-    if page[:results]
-      puts "%d) Product ID: %d, name: '%s'" % [statement.offset + 1, page[:results].first[:id], page[:results].first[:name]]
-    end
-  end
 end
