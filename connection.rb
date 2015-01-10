@@ -56,32 +56,6 @@ class Connection
   end
 
 
-  # Get all ratecards
-  def ratecard_service
-    service = @dfp.service(:RateCardService, API_VERSION)
-    statement = DfpApiStatement::FilterStatement.new("ORDER BY id ASC")
-    page = service.get_rate_cards_by_statement(statement.toStatement())
-    if page[:results]
-      page[:results].each_with_index do |ratecard, index|
-        puts "%d) Ratecard ID: %d, name: '%s'" % [index + statement.offset, ratecard[:id], ratecard[:name]]
-      end
-    end
-
-    if page.include?(:total_result_set_size)
-      puts "Total number of rate cards: %d" % page[:total_result_set_size]
-    end
-  end
-
-  # Searches for dalai ratecard based on a harcoded name
-  def get_dalai_ratecard
-    service = @dfp.service(:RateCardService, API_VERSION)
-    statement = DfpApiStatement::FilterStatement.new("WHERE name = '#{RATE_CARD}'")
-    page = service.get_rate_cards_by_statement(statement.toStatement())
-    if page[:results]
-      puts "%d) Ratecard ID: %d, name: '%s'" % [statement.offset + 1, page[:results].first[:id], page[:results].first[:name]]
-    end
-  end
-
   # Get workflow service
   def workflow_service
     service = @dfp.service(:WorkflowRequestService, API_VERSION)
@@ -108,31 +82,7 @@ class Connection
     end
   end
 
-  # Get all product templates
-  def product_template_service
-    service = @dfp.service(:ProductTemplateService, API_VERSION)
-    statement = DfpApiStatement::FilterStatement.new
-    page = service.get_product_templates_by_statement(statement.toStatement())
 
-    if page[:results]
-      page[:results].each_with_index do |product_template, index|
-        puts "%d) Product Template: %d, name: '%s'" % [index + statement.offset, product_template[:id], product_template[:name]]
-      end
-    end
-    if page.include?(:total_result_set_size)
-      puts "Total number of product templates: %d" % page[:total_result_set_size]
-    end
-  end
-
-  # Search for dalai product template based on a harcoded name
-  def get_dalai_product_template
-    service = @dfp.service(:ProductTemplateService, API_VERSION)
-    statement = DfpApiStatement::FilterStatement.new("WHERE name = '#{PRODUCT_TEMPLATE}'")
-    page = service.get_product_templates_by_statement(statement.toStatement())
-    if page[:results]
-      puts "%d) Product Template ID: %d, name: '%s'" % [statement.offset + 1, page[:results].first[:id], page[:results].first[:name]]
-    end
-  end
 
   # Search products based on a harcoded product_template_id
   def get_products

@@ -23,7 +23,7 @@ class Base
 
   def print_footer page
     if page.include?(:total_result_set_size)
-      puts "Total number of companies: %d" % page[:total_result_set_size]
+      puts "Total number: %d" % page[:total_result_set_size]
     end
   end
 end
