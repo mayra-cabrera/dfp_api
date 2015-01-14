@@ -11,17 +11,25 @@ class Order < Base
 
   def find_approved_order_by_name name = nil
     name ||= "DALAI_Test Order"
-    api_statement = generate_statement "WHERE name = '#{name}' AND status = '#{APPROVED}'"
+    api_statement = generate_statement "WHERE name = '#{name}'"
     page = @service.get_orders_by_statement api_statement.toStatement
 
-    print_results page[:results].first, api_statement
+    print_results page[:results], api_statement
+  end
+
+  def find_order_by_ids
+    api_statement = generate_statement "WHERE id IN (243342883, 244273363)"
+    page = @service.get_orders_by_statement api_statement.toStatement
+
+    print_results page[:results], api_statement
   end
 
   private
 
   def print_results results, statement
-    if results
-      puts "%d) Order ID: %d, name: '%s', status: '%s'" % [statement.offset + 1, results[:id], results[:name], results[:status]]
+    return unless results
+    results.each_with_index do |result, index|
+      puts "%d) Order ID: %d, name: '%s', status: '%s'" % [statement.offset + index, result[:id], result[:name], result[:status]]
     end
   end
 end
