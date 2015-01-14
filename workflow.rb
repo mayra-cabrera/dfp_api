@@ -2,6 +2,8 @@ require_relative 'base.rb'
 
 class Workflow < Base
   attr_accessor :service
+  PROPOSAL = "PROPOSAL"
+  UNKNOWN = "UNKNOWN"
 
   def initialize
     super
@@ -9,12 +11,15 @@ class Workflow < Base
   end
 
   # Type is not optional!
+  # entity_id makes reference to the workflow itself
+  # entityType might be PROPOSAL or UNKNOWN
   def get_all
-    api_statement = generate_statement "WHERE type = 'WORKFLOW_APPROVAL_REQUEST' AND status = 'APPROVED'"
+    api_statement = generate_statement "WHERE type = 'WORKFLOW_APPROVAL_REQUEST' AND entityType = '#{PROPOSAL}'"
     page = @service.get_workflow_requests_by_statement api_statement.toStatement
+ 
     if page[:results]
       page[:results].each_with_index do |workflow, index|
-        puts "%d) Workflow ID: %d, name: '%s'" % [index + api_statement.offset, workflow[:id], workflow[:workflow_rule_name]]
+        puts "%d) Workflow ID: %d, name: '%s', entity id: %d" % [index + api_statement.offset, workflow[:id], workflow[:workflow_rule_name], workflow[:entity_id]]
       end
     end
 
