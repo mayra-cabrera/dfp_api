@@ -1,6 +1,7 @@
 require 'dfp_api'
 require 'dfp_api_statement'
 require 'pry'
+require 'logger'
 
 class Base
   attr_accessor :dfp
@@ -10,6 +11,13 @@ class Base
   def initialize
     config_filename = File.join('dfp_api.yml')
     @dfp = DfpApi::Api.new(config_filename)
+    set_logger
+  end
+
+  def set_logger
+    @logger = Logger.new('dfp.log')
+    @logger.level = Logger::DEBUG
+    @dfp.logger = @logger
   end
 
   def generate_service service
