@@ -11,12 +11,7 @@ class ProductTemplate < Base
   def get_all
     api_statement = generate_statement
     page = @service.get_product_templates_by_statement api_statement.toStatement
-    if page[:results]
-      page[:results].each_with_index do |product_template, index|
-        puts "%d) Product Template: %d, name: '%s'" % [index + api_statement.offset, product_template[:id], product_template[:name]]
-      end
-    end
-
+    print_results page[:results] if page[:results]
     print_footer page
   end
 
@@ -24,14 +19,14 @@ class ProductTemplate < Base
     name ||= "Boxbanner Standard_RON_Basic"
     api_statement = generate_statement "WHERE name = '#{name}'"
     page = @service.get_product_templates_by_statement api_statement.toStatement
-    print_result page[:results].first, api_statement
+    print_results page[:results] if page[:results]
   end
 
   private
 
-  def print_result results, statement
-    if results
-      puts "%d) Product Template ID: %d, name: '%s'" % [statement.offset + 1, results[:id], results[:name]]
+  def print_results results
+    results.each_with_index do |product_template, index|
+      puts "%d) Product Template: %d, name: '%s'" % [index + 1, product_template[:id], product_template[:name]]
     end
   end
 end

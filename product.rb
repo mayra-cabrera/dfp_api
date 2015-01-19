@@ -13,14 +13,15 @@ class Product < Base
     api_statement = generate_statement "WHERE productTemplateId = #{product_template_id}"
     page = @service.get_products_by_statement api_statement.toStatement
 
-    print_results page[:results].first, api_statement
+    print_results page[:results] if page[:results]
+    print_footer page
   end
 
   private
 
-  def print_results results, statement
-    if results
-      puts "%d) Product ID: %d, name: '%s'" % [statement.offset + 1, results[:id], results[:name]]
+  def print_results results
+    results.each_with_index do |product, index|
+      puts "%d) Product ID: %d, name: '%s'" % [index + 1, product[:id], product[:name]]
     end
   end
 end

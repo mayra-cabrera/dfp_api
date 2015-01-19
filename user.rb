@@ -14,6 +14,7 @@ class User < Base
     page = @service.get_users_by_statement api_statement.toStatement
 
     print_results page[:results] if[:results]
+    print_footer page
   end
 
   def find_by_role role_id
@@ -21,6 +22,7 @@ class User < Base
     page = @service.get_users_by_statement api_statement.toStatement
 
     print_results page[:results] if [:results]
+    print_footer page
   end
 
   private

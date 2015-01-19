@@ -14,40 +14,32 @@ class Company < Base
     api_statement = generate_statement 
     begin
       page = @service.get_companies_by_statement api_statement.toStatement
-
-      if page[:results]
-        page[:results].each_with_index do |company, index|
-          puts "%d) Company ID: %d, name: '%s', type: '%s'" % [index + api_statement.offset, company[:id], company[:name], company[:type]]
-        end
-      end
+      print_results page[:results] if page[:results]
       api_statement.offset += DfpApiStatement::SUGGESTED_PAGE_LIMIT
-
     end while api_statement.offset < page[:total_result_set_size]
 
     print_footer page
   end
 
-  def get_advertiser_company_by_name name = nil
-    name ||= "DALAI_Test Advertiser"
-    api_statement = generate_statement "WHERE name = '#{name}' AND type = '#{ADVERTISER}'"
+  def find_advertiser_by_id company_id
+    api_statement = generate_statement "WHERE id = '#{company_id}' AND type = '#{ADVERTISER}'"
     page = @service.get_companies_by_statement api_statement.toStatement
 
-    print_result page[:results].first, api_statement
+    print_results page[:results] if page[:results]
   end
 
-  def get_agency_company_by_name name = nil
-    name ||= "DALAI_Test Agency"
-    api_statement = generate_statement "WHERE name = '#{name}' AND type = '#{AGENCY}'"
+  def find_agency_by_id company_id
+    api_statement = generate_statement "WHERE id = '#{company_id}' AND type = '#{AGENCY}'"
     page = @service.get_companies_by_statement api_statement.toStatement
 
-    print_result page[:results].first, api_statement
+    print_results page[:results] if page[:results]
   end
 
   private
 
-  def print_result results, statement
-    if results
-      puts "%d) Company ID: %d, name: '%s'" % [statement.offset + 1, results[:id], results[:name]]
+  def print_results results
+    results.each do |company|
+      puts "- Company ID: %d, name: '%s'" % [company[:id], company[:name]]
     end
   end
 end

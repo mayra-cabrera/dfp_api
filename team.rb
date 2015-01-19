@@ -12,30 +12,26 @@ class Team < Base
     api_statement = generate_statement
     begin
       page = @service.get_teams_by_statement api_statement.toStatement
-      if page[:results]
-        page[:results].each_with_index do |team, index|
-          puts "%d) Team ID: %d, name: '%s'" % [index + api_statement.offset, team[:id], team[:name]]
-        end
-      end
+      print_results page[:results] if page[:results]
       api_statement.offset += DfpApiStatement::SUGGESTED_PAGE_LIMIT
     end while api_statement.offset < page[:total_result_set_size]
 
     print_footer page
   end
 
-  def find_team_by_name name = nil
-    name ||= "DALAI_Test Team"
-    api_statement = generate_statement "WHERE name = '#{name}'"
+  def find_by_id team_id = nil
+    api_statement = generate_statement "WHERE id = '#{team_id}'"
     page = @service.get_teams_by_statement api_statement.toStatement
   
-    print_result page[:results].first, api_statement
+    print_results page[:results] if page[:results]
+    print_footer page
   end
 
   private 
 
-  def print_result results, statement
-    if results
-      puts "%d) Team id: %d, name: '%s'" % [statement.offset + 1, results[:id], results[:name]]
+  def print_results results
+    results.each_with_index do |team, index|
+      puts "%d) Team id: %d, name: '%s'" % [index + 1, team[:id], team[:name]]
     end
   end
 end
